@@ -1,7 +1,7 @@
 /**
  * SISTEMA DE CARRINHO - LOJA EDUCACIONAL
- * Versão: 4.4-PROD - Correção do texto do botão de pagamento e robustez
- * Data: Novembro 2025
+ * Versão: 4.3-PROD - Ajustes para produção (init_point) + preço robusto
+ * Data: Outubro 2025
  */
 
 // ==================== CONFIGURAÇÕES DO CARRINHO ====================
@@ -9,13 +9,13 @@ const CartConfig = {
   STORAGE_KEY: 'materiaisdaprofe_carrinho',
   MAX_QUANTITY: 1, // Máximo 1 item por produto (evita duplicatas)
   APPS_SCRIPT_BACKEND_URL: 'https://script.google.com/macros/s/AKfycbxePs6JdZksbIGZ7SsbqxNOuZ0f9asF1-LdNJsDWDPZTc4zjpCN_Kb6aelvlUexiDk9dA/exec', // URL DO APPS SCRIPT PARA PRODUTOS
-  MAKE_WEBHOOK_URL: 'https://hook.us2.make.com/1dw287n9fsyhlkrhrw1n82ry0uhg8j9d', // URL DO WEBHOOK DO MAKE PARA PAGAMENTO (deve usar token de PRODUÇÃO no cenário )
+  MAKE_WEBHOOK_URL: 'https://hook.us2.make.com/1dw287n9fsyhlkrhrw1n82ry0uhg8j9d', // URL DO WEBHOOK DO MAKE PARA PAGAMENTO (deve usar token de PRODUÇÃO no cenário)
 };
 
 // ==================== CLASSE PRINCIPAL DO CARRINHO ====================
 
 class ShoppingCart {
-  constructor() {
+  constructor( ) {
     this.items = this.loadFromStorage();
     this.isModalOpen = false;
     this.currentCheckoutStep = 1;
@@ -61,6 +61,7 @@ class ShoppingCart {
     const newItem = {
       id: produto.ID,
       title: produto.Nome,
+      // ALTERAÇÃO: normalização robusta de preço (suporta "7,90" e "7.90")
       unit_price: this.parsePriceToNumber(produto.Preço),
       quantity: 1,
       image: produto.URL_Imagem || produto.Imagens?.[0] || '',
@@ -213,7 +214,7 @@ class ShoppingCart {
             <h4>Resumo do Pedido</h4>
             <div id="resumoPedidoItens"></div>
             <div class="checkout-total"><strong>Total: R$ <span id="resumoPedidoTotal">0,00</span></strong></div>
-            <button id="btnEfetuarPagamento" class="btn btn-success btn-lg" style="width:100%; margin-top: 1rem;">Efetuar Pagamento</button>
+            <button id="btnPagarMercadoPago" class="btn btn-success btn-lg" style="width:100%; margin-top: 1rem;">Pagar com Mercado Pago</button>
             <button id="btnVoltarEtapa1" class="btn btn-outline" style="width:100%; margin-top: 0.5rem;">Voltar e editar dados</button>
           </div>
         </div>
@@ -230,7 +231,7 @@ class ShoppingCart {
     document.getElementById('cancelarCheckout').onclick = () => this.hideCheckoutForm();
     document.getElementById('avancarEtapa1').onclick = () => this.continuarCheckout();
     document.getElementById('btnVoltarEtapa1').onclick = () => this.mostrarCheckoutStep(1);
-    document.getElementById('btnEfetuarPagamento').onclick = () => this.processCheckout();
+    document.getElementById('btnPagarMercadoPago').onclick = () => this.processCheckout();
     modal.addEventListener('click', (e) => { if (e.target === modal) this.hideCheckoutForm(); });
   }
 
@@ -245,8 +246,7 @@ class ShoppingCart {
       this.mostrarCheckoutStep(1);
       if (this.customerData) {
         document.getElementById('customerName').value = this.customerData.name || '';
-        document.getElementById('customerEmail').value = this.customerData.email || '';
-        document.getElementById('customerPhone').value = this.customerData.phone || '';
+        document.getElementById('customerEmail').value = this.customerData.email || '';     document.getElementById('customerPhone').value = this.customerData.phone || '';
         document.getElementById('orderNotes').value = this.customerData.notes || '';
       }
       modal.style.display = 'flex';
@@ -283,8 +283,7 @@ class ShoppingCart {
 
   continuarCheckout() {
     const name = document.getElementById('customerName')?.value?.trim();
-    const email = document.getElementById('customerEmail')?.value?.trim();
-    const phone = document.getElementById('customerPhone')?.value?.trim();
+    const email = document.getElementById('customerEmail')?.value?.trim();   const phone = document.getElementById('customerPhone')?.value?.trim();
     const notes = document.getElementById('orderNotes')?.value?.trim();
     if (!name || !email) {
       this.showNotification('Por favor, preencha seu nome e e-mail.', 'error');
@@ -312,16 +311,15 @@ class ShoppingCart {
   }
 
   async processCheckout() {
-    const payBtn = document.getElementById('btnEfetuarPagamento');
-    let originalButtonText = 'Efetuar Pagamento'; // Texto padrão para segurança
-
+    const payBtn = document.getElementById('btnPagarMercadoPago');
     if (payBtn) {
-      originalButtonText = payBtn.textContent; // Salva o texto atual do botão
       payBtn.disabled = true;
+      payBtn.dataset.originalText = payBtn.textContent;
       payBtn.textContent = 'Processando...';
     }
 
     try {
+      // 1. Cria a base do objeto payer
       const payerData = {
         name: this.customerData.name,
         email: this.customerData.email,
@@ -331,12 +329,14 @@ class ShoppingCart {
         }
       };
 
+
+      // 2. Monta o objeto final para enviar ao Make
       const dadosParaMake = {
         items: this.items.map(item => ({
           id: String(item.id),
           title: item.title,
           quantity: item.quantity,
-          unit_price: Number(item.unit_price),
+          unit_price: Number(item.unit_price), // garante número
           description: item.description,
           picture_url: item.image,
           currency_id: "BRL",
@@ -350,35 +350,38 @@ class ShoppingCart {
 
       const response = await fetch(CartConfig.MAKE_WEBHOOK_URL, {
         method: 'POST',
+        // ALTERAÇÃO: declara Accept para garantir retorno JSON do Webhook Response
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(dadosParaMake),
       });
 
       if (!response.ok) {
+        // tenta ler JSON de erro do Make/Mercado Pago
         const errorData = await response.json().catch(() => null);
         const msg = errorData?.message || errorData?.error || 'Falha na comunicação com o servidor de pagamento.';
         throw new Error(msg);
       }
 
+      // ALTERAÇÃO: produção deve retornar { init_point: "https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=..." }
       const resultado = await response.json();
-      const paymentLink = resultado.init_point;
 
+      const paymentLink = resultado.init_point; // produção usa SEMPRE init_point
       if (paymentLink) {
         this.items = [];
         this.saveToStorage();
         this.updateCounter();
         window.location.href = paymentLink;
       } else {
-        throw new Error('Link de pagamento não foi gerado pelo servidor.');
+        throw new Error('Link de pagamento não foi gerado pelo servidor (produção).');
       }
 
     } catch (error) {
-      console.error("Erro ao processar checkout:", error);
+      console.error("Erro ao processar checkout via Make.com:", error);
       this.showNotification(error.message || 'Ops! Não foi possível iniciar o pagamento.', 'error');
     } finally {
       if (payBtn) {
         payBtn.disabled = false;
-        payBtn.textContent = originalButtonText; // Restaura o texto original que foi salvo
+        payBtn.textContent = payBtn.dataset.originalText || 'Pagar com Mercado Pago';
       }
     }
   }
@@ -389,19 +392,23 @@ class ShoppingCart {
   formatPrice(price) { return `R$ ${(parseFloat(price) || 0).toFixed(2).replace('.', ',')}`; }
   escapeHtml(text) { const div = document.createElement('div'); div.textContent = text || ''; return div.innerHTML; }
 
+  // ALTERAÇÃO: helper para interpretar preços "7,90" / "7.90" / "7"
   parsePriceToNumber(valor) {
     if (typeof valor === 'number') return valor;
     if (!valor) return 0;
     const str = String(valor).trim().replace(/\s/g, '');
+    // troca vírgula por ponto, remove qualquer caractere extra
     const normalized = str.replace(',', '.').replace(/[^0-9.]/g, '');
     const n = parseFloat(normalized);
     return Number.isFinite(n) ? n : 0;
   }
 
   showNotification(message, type = 'info') {
+    // Remove notificações existentes
     const existing = document.querySelectorAll(".cart-notification");
     existing.forEach(n => n.remove());
 
+    // Cria nova notificação
     const notification = document.createElement("div");
     notification.className = `cart-notification cart-notification-${type}`;
     notification.style.cssText = `
@@ -419,6 +426,7 @@ class ShoppingCart {
       cursor: pointer;
     `;
 
+    // Cores por tipo
     const colors = {
       success: '#10b981',
       error: '#ef4444',
@@ -429,6 +437,7 @@ class ShoppingCart {
     notification.style.backgroundColor = colors[type] || colors.info;
     notification.textContent = message;
 
+    // Adiciona botão de fechar
     const closeBtn = document.createElement("span");
     closeBtn.innerHTML = '&times;';
     closeBtn.style.cssText = `
@@ -443,6 +452,7 @@ class ShoppingCart {
 
     document.body.appendChild(notification);
 
+    // Remove automaticamente
     setTimeout(() => {
       if (notification.parentNode) {
         notification.style.animation = 'slideOutRight 0.3s ease';
@@ -450,6 +460,7 @@ class ShoppingCart {
       }
     }, 5000);
 
+    // Remove ao clicar
     notification.onclick = () => notification.remove();
   }
 }
@@ -461,12 +472,14 @@ document.addEventListener('DOMContentLoaded', () => {
   window.cart = cart;
 });
 
+// A função adicionarAoCarrinho agora usa a URL do Apps Script para buscar o produto
 window.adicionarAoCarrinho = async (produtoId) => {
   if (typeof produtos === 'undefined' || produtos.length === 0) {
+    // Se 'produtos' não estiver carregado, tenta buscar via Apps Script
     try {
       const response = await fetch(CartConfig.APPS_SCRIPT_BACKEND_URL);
       if (!response.ok) throw new Error('Falha ao carregar produtos do Apps Script.');
-      window.produtos = await response.json();
+      window.produtos = await response.json(); // Popula a variável global 'produtos'
     } catch (error) {
       console.error('Erro ao carregar produtos para adicionar ao carrinho:', error);
       cart?.showNotification('Erro ao carregar produtos. Tente novamente.', 'error');
@@ -486,42 +499,218 @@ window.limparCarrinho = () => cart?.clearCart();
 window.finalizarCompra = () => cart?.showCheckoutForm();
 
 // ==================== ESTILOS CSS ====================
+
+// Adiciona estilos necessários
 const cartStyles = document.createElement('style');
 cartStyles.textContent = `
   @keyframes slideInRight {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
   }
+
   @keyframes slideOutRight {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(100%); opacity: 0; }
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
   }
-  .carrinho-item { display: flex; gap: 1rem; padding: 1rem; border-bottom: 1px solid #e5e7eb; align-items: center; }
-  .carrinho-item:last-child { border-bottom: none; }
-  .carrinho-item-imagem { width: 60px; height: 60px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #f3f4f6; border-radius: 8px; font-size: 1.5rem; }
-  .carrinho-item-imagem img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
-  .carrinho-item-info { flex: 1; min-width: 0; }
-  .carrinho-item-titulo { font-size: 1rem; font-weight: 600; margin: 0 0 0.25rem 0; color: #1f2937; }
-  .carrinho-item-descricao { font-size: 0.875rem; color: #6b7280; margin: 0 0 0.5rem 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .carrinho-item-preco { font-weight: 600; color: #059669; font-size: 1rem; }
-  .carrinho-item-controles { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; }
-  .quantidade-controle { display: flex; align-items: center; gap: 0.5rem; background: #f3f4f6; border-radius: 6px; padding: 0.25rem; }
-  .quantidade-btn { width: 28px; height: 28px; border: none; background: #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 600; transition: all 0.2s ease; }
-  .quantidade-btn:hover:not(:disabled) { background: #d1d5db; }
-  .quantidade-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .quantidade-valor { min-width: 20px; text-align: center; font-weight: 600; font-size: 0.875rem; }
-  .remover-item-btn { background: #fee2e2; border: none; border-radius: 4px; padding: 0.25rem 0.5rem; cursor: pointer; transition: all 0.2s ease; font-size: 0.875rem; }
-  .remover-item-btn:hover { background: #fecaca; }
-  .checkout-total { text-align: center; padding: 1rem; background: #f9fafb; border-radius: 8px; margin-top: 1rem; font-size: 1.125rem; }
-  .form-group { margin-bottom: 1rem; }
-  .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151; }
-  .form-input { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 1rem; transition: border-color 0.2s ease; }
-  .form-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-  .cart-notification { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+  .carrinho-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    align-items: center;
+  }
+
+  .carrinho-item:last-child {
+    border-bottom: none;
+  }
+
+  .carrinho-item-imagem {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    border-radius: 8px;
+    font-size: 1.5rem;
+  }
+
+  .carrinho-item-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .carrinho-item-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .carrinho-item-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    color: #1f2937;
+  }
+
+  .carrinho-item-descricao {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0 0 0.5rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .carrinho-item-preco {
+    font-weight: 600;
+    color: #059669;
+    font-size: 1rem;
+  }
+
+  .carrinho-item-controles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .quantidade-controle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f3f4f6;
+    border-radius: 6px;
+    padding: 0.25rem;
+  }
+
+  .quantidade-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: #e5e7eb;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .quantidade-btn:hover:not(:disabled) {
+    background: #d1d5db;
+  }
+
+  .quantidade-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .quantidade-valor {
+    min-width: 20px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  .remover-item-btn {
+    background: #fee2e2;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+  }
+
+  .remover-item-btn:hover {
+    background: #fecaca;
+  }
+
+  .checkout-total {
+    text-align: center;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-top: 1rem;
+    font-size: 1.125rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .cart-notification {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
 `;
+
 document.head.appendChild(cartStyles);
 
 // ==================== EXPORT ====================
+
+// Para compatibilidade com módulos
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = ShoppingCart;
 }
