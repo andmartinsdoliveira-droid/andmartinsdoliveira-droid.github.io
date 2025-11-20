@@ -214,7 +214,7 @@ class ShoppingCart {
             <h4>Resumo do Pedido</h4>
             <div id="resumoPedidoItens"></div>
             <div class="checkout-total"><strong>Total: R$ <span id="resumoPedidoTotal">0,00</span></strong></div>
-            <button id="btnPagarMercadoPago" class="btn btn-success btn-lg" style="width:100%; margin-top: 1rem;">Pagar com Mercado Pago</button>
+            <button id="btnPagarMercadoPago" class="btn btn-success btn-lg" style="width:100%; margin-top: 1rem;">Efetuar Pagamento</button>
             <button id="btnVoltarEtapa1" class="btn btn-outline" style="width:100%; margin-top: 0.5rem;">Voltar e editar dados</button>
           </div>
         </div>
@@ -381,7 +381,7 @@ class ShoppingCart {
     } finally {
       if (payBtn) {
         payBtn.disabled = false;
-        payBtn.textContent = payBtn.dataset.originalText || 'Pagar com Mercado Pago';
+        payBtn.textContent = payBtn.dataset.originalText || 'Efetuar Pagamento';
       }
     }
   }
