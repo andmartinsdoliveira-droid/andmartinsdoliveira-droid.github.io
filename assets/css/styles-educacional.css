@@ -154,12 +154,6 @@ a:hover {
   animation: bounce 2s ease-in-out infinite;
 }
 
-.logo-emoji{
-  width: 60px;   /* ajuste aqui */
-  height: 60px;
-  object-fit: contain;
-}
-
 .banner-text {
   color: var(--cor-branco);
   text-align: left;
