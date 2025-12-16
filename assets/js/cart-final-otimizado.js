@@ -205,8 +205,7 @@ class ShoppingCart {
             <form id="checkoutForm">
               <div class="form-group"><label class="form-label">Nome Completo *</label><input type="text" id="customerName" class="form-input" required></div>
               <div class="form-group"><label class="form-label">E-mail *</label><input type="email" id="customerEmail" class="form-input" required></div>
-              <div class="form-group"><label class="form-label">Telefone (WhatsApp)</label><input type="tel" id="customerPhone" class="form-input" placeholder="(11) 99999-9999"></div>
-              <div class="form-group"><label class="form-label">Observações</label><textarea id="orderNotes" class="form-input" rows="3" placeholder="Informações adicionais..."></textarea></div>
+              <div class="form-group"><label class="form-label">Telefone (WhatsApp)</label><input type="tel" id="customerPhone" class="form-input" placeholder="(11) 99999-9999"></div>             
               <div class="checkout-total"><strong>Total: R$ <span id="checkoutTotal">0,00</span></strong></div>
             </form>
           </div>
