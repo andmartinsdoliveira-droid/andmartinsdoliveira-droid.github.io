@@ -1036,3 +1036,6 @@ a:hover {
   .search-input{ width: 100% !important; } /* evita apertar e quebrar */
 }
 
+@media (max-width: 768px){
+  body{ outline: 6px solid red !important; }
+}
