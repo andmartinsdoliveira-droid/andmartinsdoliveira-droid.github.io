@@ -967,15 +967,6 @@ a:hover {
   }
 }
 
-/* ========= DESATIVAR TOPO FIXO ========= */
-.header,
-header,
-.site-header,
-#header {
-  position: relative !important;
-  top: auto !important;
-  z-index: auto !important;
-}
 
 /* ========= PRODUTO MOBILE: IMAGENS ANTES DA DESCRIÇÃO ========= */
 @media (max-width: 768px){
