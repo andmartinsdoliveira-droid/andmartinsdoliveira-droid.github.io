@@ -967,61 +967,129 @@ a:hover {
   }
 }
 
-/* ==================== PATCH MOBILE (corrige sobreposição/cortes) ==================== */
+/* ========= UNIFICAR FONTES (topo + banner) ========= */
+:root{
+  --fonte-topo-banner: var(--fonte-titulo); /* escolha: use a mesma em tudo */
+}
+
+/* ========= BANNER MAIS ESTREITO + LADO A LADO ========= */
+.banner{
+  height: 72px !important;            /* mais estreito */
+  padding: 8px 12px !important;
+}
+
+.banner-content{
+  flex-direction: row !important;      /* lado a lado */
+  gap: 12px !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.banner-logo{
+  width: 44px !important;              /* menor */
+  height: 44px !important;
+  animation: none !important;          /* opcional: remove bounce */
+}
+
+.logo-emoji{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+/* texto do banner */
+.banner-title{
+  font-family: var(--fonte-topo-banner) !important;
+  font-size: 1.6rem !important;
+  line-height: 1.1 !important;
+  margin: 0 !important;
+}
+
+.banner-subtitle{
+  display: none !important;            /* opcional: some no mobile p/ economizar altura */
+}
+
+/* topo fixo com a mesma fonte do banner */
+.logo, .nav-link{
+  font-family: var(--fonte-topo-banner) !important;
+}
+
+/* ========= HEADER COMPACTO NO MOBILE ========= */
 @media (max-width: 768px){
 
-  /* HEADER/TOPO: remove altura fixa que causa sobreposição */
-  header, .header, .site-header, #header, .top-bar, .navbar {
+  .header{
     height: auto !important;
-    min-height: 0 !important;
-    padding-bottom: 10px !important;
   }
 
-  /* Conteúdo interno do header */
-  header *, .header *, .site-header * {
-    max-height: none !important;
-  }
-
-  /* MENU: força quebrar linha e centraliza */
-  nav ul, header nav ul, .nav, .navbar-nav, .menu, .menu ul {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
+  .header-content{
+    flex-direction: column !important;
     gap: 8px !important;
+    padding: 8px 12px !important;
   }
 
-  nav ul li, .nav-link, .menu a, nav a, .navbar-nav a {
-    white-space: nowrap !important;
-    line-height: 1.2 !important;
-    padding: 6px 10px !important;
-  }
-
-  /* LOGO (coruja) dentro do círculo: evita corte */
-  .banner-logo img, .banner-logo svg, .logo-emoji {
+  /* menu em uma faixa única rolável */
+  .nav{
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px !important;
     width: 100% !important;
-    height: 100% !important;
-    object-fit: contain !important;
-    display: block !important;
+    justify-content: flex-start !important;
+    padding-bottom: 6px !important;
   }
 
-  /* MODAL/CARRINHO: footer em coluna e botões 100% */
-  .modal-footer, .cart-actions, .actions, .woocommerce-cart-actions {
+  .nav-link{
+    white-space: nowrap !important;
+    padding: 6px 10px !important;
+    font-size: 15px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* busca ocupando a largura toda */
+  .search-container{ width: 100% !important; }
+  .search-input{ width: 100% !important; }
+}
+
+/* ========= PRODUTO: IMAGENS ACIMA DA DESCRIÇÃO (MOBILE) ========= */
+@media (max-width: 768px){
+
+  .single-product .product,
+  .woocommerce div.product{
     display: flex !important;
     flex-direction: column !important;
-    gap: 10px !important;
   }
 
-  .modal-footer a, .modal-footer button,
-  .cart-actions a, .cart-actions button,
-  .actions a, .actions button {
+  /* Galeria primeiro */
+  .woocommerce div.product div.images,
+  .woocommerce div.product .woocommerce-product-gallery{
+    order: 1 !important;
     width: 100% !important;
-    max-width: 100% !important;
   }
 
-  /* Carrinho flutuante: sobe pra não cobrir conteúdo */
-  .carrinho-flutuante, .floating-cart, .cart-float {
-    bottom: 80px !important;
-    right: 16px !important;
-    z-index: 999 !important;
+  /* Descrição / resumo depois */
+  .woocommerce div.product div.summary,
+  .single-product .summary{
+    order: 2 !important;
+    width: 100% !important;
+  }
+
+  /* aumenta a área da imagem principal */
+  .woocommerce div.product .woocommerce-product-gallery__image img{
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+
+  /* miniaturas abaixo da imagem e visíveis */
+  .woocommerce div.product .flex-control-thumbs{
+    display: flex !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    padding: 10px 0 !important;
+    margin: 0 !important;
+  }
+  .woocommerce div.product .flex-control-thumbs li{
+    flex: 0 0 auto !important;
+    width: 72px !important;
   }
 }
