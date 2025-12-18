@@ -967,120 +967,43 @@ a:hover {
   }
 }
 
-/* ========= UNIFICAR FONTES (topo + banner) ========= */
-:root{
-  --fonte-topo-banner: var(--fonte-titulo); /* escolha: use a mesma em tudo */
+/* ========= DESATIVAR TOPO FIXO ========= */
+.header,
+header,
+.site-header,
+#header {
+  position: relative !important;
+  top: auto !important;
+  z-index: auto !important;
 }
 
-/* ========= BANNER MAIS ESTREITO + LADO A LADO ========= */
-.banner{
-  height: 72px !important;            /* mais estreito */
-  padding: 8px 12px !important;
-}
-
-.banner-content{
-  flex-direction: row !important;      /* lado a lado */
-  gap: 12px !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-.banner-logo{
-  width: 44px !important;              /* menor */
-  height: 44px !important;
-  animation: none !important;          /* opcional: remove bounce */
-}
-
-.logo-emoji{
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: contain !important;
-}
-
-/* texto do banner */
-.banner-title{
-  font-family: var(--fonte-topo-banner) !important;
-  font-size: 1.6rem !important;
-  line-height: 1.1 !important;
-  margin: 0 !important;
-}
-
-.banner-subtitle{
-  display: none !important;            /* opcional: some no mobile p/ economizar altura */
-}
-
-/* topo fixo com a mesma fonte do banner */
-.logo, .nav-link{
-  font-family: var(--fonte-topo-banner) !important;
-}
-
-/* ========= HEADER COMPACTO NO MOBILE ========= */
+/* ========= PRODUTO MOBILE: IMAGENS ANTES DA DESCRIÇÃO ========= */
 @media (max-width: 768px){
 
-  .header{
-    height: auto !important;
-  }
-
-  .header-content{
-    flex-direction: column !important;
-    gap: 8px !important;
-    padding: 8px 12px !important;
-  }
-
-  /* menu em uma faixa única rolável */
-  .nav{
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-    gap: 8px !important;
-    width: 100% !important;
-    justify-content: flex-start !important;
-    padding-bottom: 6px !important;
-  }
-
-  .nav-link{
-    white-space: nowrap !important;
-    padding: 6px 10px !important;
-    font-size: 15px !important;
-    line-height: 1.1 !important;
-  }
-
-  /* busca ocupando a largura toda */
-  .search-container{ width: 100% !important; }
-  .search-input{ width: 100% !important; }
-}
-
-/* ========= PRODUTO: IMAGENS ACIMA DA DESCRIÇÃO (MOBILE) ========= */
-@media (max-width: 768px){
-
+  /* container do produto vira coluna */
   .single-product .product,
   .woocommerce div.product{
     display: flex !important;
     flex-direction: column !important;
   }
 
-  /* Galeria primeiro */
+  /* GALERIA PRIMEIRO */
   .woocommerce div.product div.images,
   .woocommerce div.product .woocommerce-product-gallery{
     order: 1 !important;
     width: 100% !important;
+    margin-bottom: 16px !important;
   }
 
-  /* Descrição / resumo depois */
-  .woocommerce div.product div.summary,
-  .single-product .summary{
-    order: 2 !important;
-    width: 100% !important;
-  }
-
-  /* aumenta a área da imagem principal */
+  /* imagem principal grande */
   .woocommerce div.product .woocommerce-product-gallery__image img{
     width: 100% !important;
     height: auto !important;
+    max-height: 70vh !important;
     object-fit: contain !important;
   }
 
-  /* miniaturas abaixo da imagem e visíveis */
+  /* miniaturas logo abaixo da imagem */
   .woocommerce div.product .flex-control-thumbs{
     display: flex !important;
     gap: 8px !important;
@@ -1088,8 +1011,16 @@ a:hover {
     padding: 10px 0 !important;
     margin: 0 !important;
   }
+
   .woocommerce div.product .flex-control-thumbs li{
     flex: 0 0 auto !important;
     width: 72px !important;
+  }
+
+  /* DESCRIÇÃO COMPLETA DEPOIS */
+  .woocommerce div.product div.summary,
+  .single-product .summary{
+    order: 2 !important;
+    width: 100% !important;
   }
 }
