@@ -968,11 +968,6 @@ a:hover {
 }
 
 /* ==================== PATCH MOBILE (corrige sobreposição/cortes) ==================== */
-/*
- * Correções de Layout Mobile (Patch Refinado)
- * Aplicado para telas com largura máxima de 768px
- * Baseado na análise do CSS fornecido pelo cliente.
- */
 @media (max-width: 768px) {
 
     /* 1. Correção de Sobreposição do Header/Menu */
@@ -1070,5 +1065,16 @@ a:hover {
         flex-wrap: wrap;
         justify-content: center;
         width: 100%;
+    }
+}
+
+/* 5. Correção para Imagem de Detalhe do Produto (Adicionado a pedido do usuário) */
+@media (max-width: 768px) {
+    /* Assumindo que a imagem de detalhe do produto usa um seletor como .produto-detalhe-imagem ou .produto-imagem */
+    .produto-detalhe-imagem img,
+    .produto-imagem img {
+        height: auto !important; /* Remove qualquer altura fixa que possa estar cortando a imagem */
+        max-width: 100% !important;
+        object-fit: contain !important; /* Garante que a imagem se ajuste ao container sem ser cortada */
     }
 }
