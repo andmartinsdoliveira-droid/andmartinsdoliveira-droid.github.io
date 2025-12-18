@@ -967,3 +967,72 @@ a:hover {
   }
 }
 
+/* ==================== PATCH MOBILE (corrige sobreposição/cortes) ==================== */
+@media (max-width: 768px) {
+
+  /* 1) HEADER: não pode ter altura fixa no mobile */
+  .header{
+    height: auto !important;          /* <-- isso resolve a sobreposição */
+    padding-bottom: 10px !important;
+  }
+
+  /* garante que o sticky não “coma” a página */
+  .container{
+    padding-top: 10px; /* pequeno respiro após o header */
+  }
+
+  /* Menu: permite quebrar em 2 linhas e centraliza */
+  .nav{
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+
+  .nav-link{
+    padding: 6px 10px !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+  }
+
+  /* 2) LOGO CORUJA: não pode ser maior que o círculo */
+  .logo-emoji{
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    display: block;
+  }
+
+  /* 3) MODAL DO CARRINHO: botões em coluna e 100% largura */
+  .modal-content{
+    width: 92vw !important;
+    max-width: 92vw !important;
+  }
+
+  .modal-footer{
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .modal-footer .btn,
+  .modal-footer a,
+  .modal-footer button{
+    width: 100% !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+  }
+
+  /* 4) Carrinho flutuante: sobe um pouco pra não cobrir conteúdo */
+  .carrinho-flutuante{
+    bottom: 80px !important;  /* sobe para não cobrir card/imagem */
+    right: 16px !important;
+    z-index: 999 !important;  /* abaixo do modal (2000) */
+  }
+}
+
+/* patch extra para telas bem pequenas */
+@media (max-width: 480px){
+  .search-input{ width: 100% !important; } /* evita apertar e quebrar */
+}
+
