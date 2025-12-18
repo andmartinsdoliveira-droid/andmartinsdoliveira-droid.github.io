@@ -968,113 +968,60 @@ a:hover {
 }
 
 /* ==================== PATCH MOBILE (corrige sobreposição/cortes) ==================== */
-@media (max-width: 768px) {
+@media (max-width: 768px){
 
-    /* 1. Correção de Sobreposição do Header/Menu */
-    /* O header tem altura fixa (--altura-header) e position: sticky.
-       No mobile, o conteúdo do header-content (flex-direction: column) cresce,
-       mas o header pai o restringe, causando sobreposição do conteúdo abaixo. */
-    .header {
-        height: auto !important; /* Permite que o header cresça com o conteúdo */
-        min-height: var(--altura-header, 70px); /* Garante a altura mínima definida na variável */
-        padding-bottom: 10px; /* Adiciona um pequeno espaçamento inferior */
-    }
+  /* HEADER/TOPO: remove altura fixa que causa sobreposição */
+  header, .header, .site-header, #header, .top-bar, .navbar {
+    height: auto !important;
+    min-height: 0 !important;
+    padding-bottom: 10px !important;
+  }
 
-    /* O .header-content já tem flex-direction: column e height: auto no 768px.
-       O .nav já tem flex-wrap: wrap e justify-content: center no 480px.
-       Não é necessário repetir, mas garantimos que o .nav use 100% da largura do .header-content */
-    .header-content {
-        width: 100%;
-    }
+  /* Conteúdo interno do header */
+  header *, .header *, .site-header * {
+    max-height: none !important;
+  }
 
-    /* Ajuste do conteúdo principal para evitar sobreposição pelo header sticky.
-       É necessário adicionar um padding-top ao elemento que vem logo após o header
-       (provavelmente o .container ou um wrapper principal) para empurrar o conteúdo.
-       O valor deve ser maior que a altura máxima do header no mobile. */
-    /* Garante que o conteúdo principal não fique atrás do header fixo */
-    .container {
-        padding-top: 200px !important; /* Valor alto para garantir que o conteúdo seja empurrado para baixo */
-    }
-    /* .container { padding-top: calc(var(--altura-header, 100px) + 20px) !important; } */
-    
+  /* MENU: força quebrar linha e centraliza */
+  nav ul, header nav ul, .nav, .navbar-nav, .menu, .menu ul {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
 
+  nav ul li, .nav-link, .menu a, nav a, .navbar-nav a {
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+    padding: 6px 10px !important;
+  }
 
-    /* 2. Correção do Logo da Coruja Cortado */
-    /* O logo é a imagem dentro do .banner-logo. A imagem é maior que o container. */
-    .banner-logo .logo-emoji {
-        width: 100%; /* Garante que a imagem ocupe 100% da largura do container (60px no mobile) */
-        height: 100%; /* Garante que a imagem ocupe 100% da altura do container */
-        object-fit: contain; /* Garante que a imagem seja contida dentro do container sem ser cortada */
-    }
+  /* LOGO (coruja) dentro do círculo: evita corte */
+  .banner-logo img, .banner-logo svg, .logo-emoji {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    display: block !important;
+  }
 
-    /* 3. Ajuste do Modal do Carrinho com Botões Cortados */
-    /* O modal usa .modal-footer. Precisamos garantir que os botões dentro dele
-       fiquem em coluna e com largura total. */
-    .modal-footer {
-        display: flex;
-        flex-direction: column; /* Botões em coluna */
-        gap: var(--espacamento-md); /* Espaçamento entre os botões */
-        padding: var(--espacamento-lg); /* Garante padding interno */
-    }
+  /* MODAL/CARRINHO: footer em coluna e botões 100% */
+  .modal-footer, .cart-actions, .actions, .woocommerce-cart-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
 
-    /* Botões do modal com largura total. O CSS original usa .btn */
-    .modal-footer .btn {
-        width: 100%; /* Largura 100% */
-        margin: 0 !important; /* Remove margens laterais que podem causar esmagamento */
-    }
+  .modal-footer a, .modal-footer button,
+  .cart-actions a, .cart-actions button,
+  .actions a, .actions button {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 
-    /* Garante que o modal não ultrapasse a viewport e tenha scroll interno.
-       O CSS original já tem max-height: 90vh e overflow-y: auto no .modal-content,
-       mas o .modal-body também tem max-height: 400px e overflow-y: auto.
-       Vamos garantir que o .modal-content não tenha margens que o empurrem para fora. */
-    .modal-content {
-        margin: var(--espacamento-md); /* Mantém a margem definida no CSS original */
-        max-width: calc(100% - 2rem); /* Mantém a largura máxima definida no CSS original */
-        max-height: 95vh; /* Aumenta um pouco a altura máxima para dar mais espaço */
-    }
-
-    /* 4. Ajuste do Carrinho Flutuante Cobre Conteúdo */
-    /* O CSS original já move o botão para bottom: var(--espacamento-lg) no 768px.
-       Vamos subir um pouco mais para ser menos intrusivo, usando um valor fixo seguro. */
-    .carrinho-flutuante {
-        bottom: 70px !important; /* Sobe o botão para evitar sobrepor o rodapé ou conteúdo inferior */
-        right: var(--espacamento-lg); /* Mantém na direita */
-        z-index: 1000; /* Garante que fique acima de outros elementos */
-    }
-
-    /* Reduz o tamanho do botão para ser menos intrusivo no mobile */
-    .carrinho-btn {
-        width: 50px;
-        height: 50px;
-        font-size: 1.2rem;
-    }
-
-    /* Ajusta a posição do contador para o novo tamanho do botão */
-    .carrinho-contador {
-        width: 20px;
-        height: 20px;
-        font-size: 0.7rem;
-        top: -3px;
-        right: -3px;
-    }
-}
-
-@media (max-width: 480px) {
-    /* Garante que o menu quebre corretamente e fique centralizado */
-    .nav {
-        flex-wrap: wrap;
-        justify-content: center;
-        width: 100%;
-    }
-}
-
-/* 5. Correção para Imagem de Detalhe do Produto (Adicionado a pedido do usuário) */
-@media (max-width: 768px) {
-    /* Assumindo que a imagem de detalhe do produto usa um seletor como .produto-detalhe-imagem ou .produto-imagem */
-    .produto-detalhe-imagem img,
-    .produto-imagem img {
-        height: auto !important; /* Remove qualquer altura fixa que possa estar cortando a imagem */
-        max-width: 100% !important;
-        object-fit: contain !important; /* Garante que a imagem se ajuste ao container sem ser cortada */
-    }
+  /* Carrinho flutuante: sobe pra não cobrir conteúdo */
+  .carrinho-flutuante, .floating-cart, .cart-float {
+    bottom: 80px !important;
+    right: 16px !important;
+    z-index: 999 !important;
+  }
 }
