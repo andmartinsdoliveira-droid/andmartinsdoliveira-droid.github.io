@@ -1,14 +1,16 @@
 /**
  * ESTILOS EDUCACIONAIS - LOJA ESPAÇO DO EDUCADOR
- * Versão: 4.0 - Final Otimizada
+ * Versão: 4.0 - Final Otimizada (COM CORREÇÕES MOBILE)
  * Data: Agosto 2024
  * 
- * Sistema de design completo com:
- * - Variáveis CSS customizadas
- * - Layout responsivo
- * - Componentes reutilizáveis
- * - Animações suaves
- * - Banner com logo funcional
+ * Correções aplicadas (somente onde necessário):
+ * - Modal: removido display duplicado + suporte a .is-open
+ * - Mobile (<768px):
+ *   - Banner: logo ao lado do texto (row)
+ *   - Header: remove sticky (position: static)
+ *   - Fonte unificada (fonte principal em todos os elementos)
+ *   - Busca e header menos “estourados”
+ * - Mantidas suas regras WooCommerce (imagens antes da descrição no mobile)
  */
 
 /* ==================== VARIÁVEIS CSS ==================== */
@@ -562,7 +564,8 @@ a:hover {
 }
 
 /* ==================== MODAIS ==================== */
-.modal {
+/* (CORRIGIDO) - removido display duplicado e preparado .is-open */
+.modal{
   display: none; /* começa sempre fechado */
   position: fixed;
   top: 0;
@@ -570,11 +573,15 @@ a:hover {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  display: none;
   align-items: center;
   justify-content: center;
   z-index: 2000;
   padding: var(--espacamento-lg);
+}
+
+/* quando abrir via JS, adicione .is-open */
+.modal.is-open{
+  display: flex;
 }
 
 .modal-content {
@@ -798,18 +805,43 @@ a:hover {
     --altura-banner: 100px;
   }
 
+  /* (CORRIGIDO) Banner com logo ao lado no mobile */
+  .banner-content {
+    flex-direction: row !important;
+    justify-content: center;
+    align-items: center;
+    gap: var(--espacamento-sm) !important;
+    padding: 0 var(--espacamento-sm);
+    text-align: left;
+  }
+
+  /* reduzir um pouco pra caber bem */
+  .banner-logo {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 2rem !important;
+  }
+
+  .logo-emoji {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
   .banner-title {
-    font-size: 2rem;
+    font-size: 1.6rem !important;
+    line-height: 1.1;
   }
 
   .banner-subtitle {
-    font-size: 1rem;
+    font-size: 0.95rem !important;
   }
 
-  .banner-logo {
-    width: 60px;
-    height: 60px;
-    font-size: 2rem;
+  /* (CORRIGIDO) Header: remover sticky no mobile */
+  .header {
+    position: static !important;
+    top: auto !important;
+    box-shadow: none !important;
+    height: auto !important;
   }
 
   .header-content {
@@ -821,10 +853,13 @@ a:hover {
 
   .nav {
     gap: var(--espacamento-lg);
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .search-input {
-    width: 200px;
+    width: 100% !important;
+    max-width: 320px;
   }
 
   .produtos-grid {
@@ -856,21 +891,23 @@ a:hover {
     gap: var(--espacamento-lg);
     text-align: center;
   }
+
+  /* (CORRIGIDO) Unificar fonte no mobile */
+  body, h1, h2, h3, h4, h5, h6, p, span, a, input, button, select, textarea {
+    font-family: var(--fonte-principal) !important;
+  }
 }
 
 @media (max-width: 480px) {
-  .banner-content {
-    flex-direction: column;
-    text-align: center;
-    gap: var(--espacamento-md);
-  }
+  /* (REMOVIDO o column do banner-content daqui para não desfazer a correção)
+     Mantemos o banner em linha mesmo em telas bem pequenas. */
 
   .banner-title {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
   }
 
   .banner-subtitle {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .produtos-grid {
@@ -966,7 +1003,6 @@ a:hover {
     border: 1px solid #ccc;
   }
 }
-
 
 /* ========= PRODUTO MOBILE: IMAGENS ANTES DA DESCRIÇÃO ========= */
 @media (max-width: 768px){
