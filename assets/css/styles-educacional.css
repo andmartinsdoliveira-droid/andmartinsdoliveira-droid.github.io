@@ -1052,3 +1052,49 @@ a:hover {
   }
 }
 
+@media (max-width: 768px){
+  .produtos-grid{
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ===== MODAL "MEU CARRINHO": alinhar botões do footer ===== */
+
+/* Footer do modal vira uma barra de ações alinhada */
+.modal-footer{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--espacamento-sm);
+  flex-wrap: wrap; /* se faltar espaço, quebra sem bagunçar */
+}
+
+/* Todos os botões dentro do footer ficam com a mesma altura */
+.modal-footer .btn,
+.modal-footer button,
+.modal-footer a{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;          /* padrão “touch” bom */
+  line-height: 1;
+  white-space: nowrap;       /* evita quebrar “Limpar Carrinho” */
+}
+
+/* Se algum botão estiver "espichando" por padding diferente */
+.modal-footer .btn{
+  padding: var(--espacamento-md) var(--espacamento-lg);
+}
+
+/* Dá um comportamento melhor no mobile: botões em coluna, 100% largura */
+@media (max-width: 480px){
+  .modal-footer{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .modal-footer .btn,
+  .modal-footer button,
+  .modal-footer a{
+    width: 100%;
+  }
+}
