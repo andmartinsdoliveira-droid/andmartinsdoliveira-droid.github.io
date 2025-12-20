@@ -1098,3 +1098,27 @@ a:hover {
     width: 100%;
   }
 }
+
+/* ==================== CORREÇÕES MOBILE SOLICITADAS ==================== */
+
+@media (max-width: 768px) {
+  /* 1. CORREÇÃO: Botões do modal "Meu Carrinho" em coluna no mobile */
+  /* O seletor mira o div que contém os botões no modal-footer (linha 163 do HTML) */
+  .modal-footer > div > div:last-child {
+    flex-direction: column;
+  }
+
+  /* 2. CORREÇÃO: Layout de detalhe do produto em coluna no mobile */
+  /* O seletor mira a primeira seção dentro de #produtoDetalhes (linha 59 do HTML) */
+  #produtoDetalhes > section:first-child {
+    /* Sobrescreve o estilo inline 'display:grid;grid-template-columns:1fr 1fr;' */
+    grid-template-columns: 1fr !important;
+    gap: var(--espacamento-lg) !important; /* Reduz o gap para mobile */
+  }
+
+  /* 4. CORREÇÃO: Manter a fonte do banner "Pedagoruja" no mobile */
+  /* Sobrescreve a regra de unificação de fonte (linhas 896-898 do CSS) */
+  .banner-title {
+    font-family: var(--fonte-titulo) !important;
+  }
+}
