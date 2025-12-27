@@ -223,8 +223,6 @@ class ShoppingCart {
 
             <div id="resumoPedidoItens"></div>
             <div class="checkout-total"><strong>Total: R$ <span id="resumoPedidoTotal">0,00</span></strong></div>
-</div>
-
             <button id="btnPagarMercadoPago" class="btn btn-success btn-lg" style="width:100%; margin-top: 1rem;">Efetuar Pagamento</button>
             <button id="btnVoltarEtapa1" class="btn btn-outline" style="width:100%; margin-top: 0.5rem;">Voltar e editar dados</button>
           </div>
