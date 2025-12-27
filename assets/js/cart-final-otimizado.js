@@ -223,9 +223,6 @@ class ShoppingCart {
 
             <div id="resumoPedidoItens"></div>
             <div class="checkout-total"><strong>Total: R$ <span id="resumoPedidoTotal">0,00</span></strong></div>
-
-            <div id="pixAvisoNomePf" class="checkout-hint">
-  ℹ️ No PIX, o nome exibido pode ser o do responsável financeiro. O pagamento é processado com segurança pelo Mercado Pago.
 </div>
 
             <button id="btnPagarMercadoPago" class="btn btn-success btn-lg" style="width:100%; margin-top: 1rem;">Efetuar Pagamento</button>
