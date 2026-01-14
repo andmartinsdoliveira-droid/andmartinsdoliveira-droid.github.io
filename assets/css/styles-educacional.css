@@ -258,6 +258,7 @@ a:hover {
 
 /* ==================== LAYOUT PRINCIPAL ==================== */
 .container {
+  width: 100%;
   max-width: var(--largura-maxima);
   margin: 0 auto;
   padding: 0 var(--espacamento-lg);
@@ -1336,3 +1337,33 @@ a:hover {
     font-size: 40px;
   }
 }
+
+/* ===============================
+   CORREÇÃO DE OVERFLOW – MOBILE
+   =============================== */
+
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-container {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .carousel-track {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  #produtoDetalhes {
+    width: 100%;
+    overflow-x: hidden;
+  }
+}
+
