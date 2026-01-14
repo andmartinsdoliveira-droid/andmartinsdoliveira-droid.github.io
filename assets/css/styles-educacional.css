@@ -1337,3 +1337,25 @@ a:hover {
     font-size: 40px;
   }
 }
+
+/* Localize a regra .container e garanta que ela esteja assim: */
+.container {
+  width: 100%; /* Garante que ocupe toda a largura */
+  max-width: var(--largura-maxima); /* Mantém o limite no desktop */
+  margin: 0 auto;
+  padding: 0 var(--espacamento-lg); /* Isso cria um respiro interno */
+}
+
+/* Para resolver o problema específico da imagem (celular), adicione ou ajuste isso: */
+@media (max-width: 768px) {
+  .container {
+    padding: 0; /* Remove o preenchimento lateral no mobile para encostar nas bordas */
+  }
+  
+  /* Se o banner ou o cabeçalho também estiverem recuados, adicione: */
+  .header, .banner, .main-content {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
