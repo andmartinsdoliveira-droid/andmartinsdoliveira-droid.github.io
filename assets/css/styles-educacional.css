@@ -1340,7 +1340,7 @@ a:hover {
 
 /* Localize a regra .container e garanta que ela esteja assim: */
 .container {
-  width: 100%; /* Garante que ocupe toda a largura */
+  width: 98%; /* Garante que ocupe toda a largura */
   max-width: var(--largura-maxima); /* Mantém o limite no desktop */
   margin: 0 auto;
   padding: 0 var(--espacamento-lg); /* Isso cria um respiro interno */
