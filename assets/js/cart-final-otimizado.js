@@ -732,3 +732,15 @@ document.head.appendChild(cartStyles);
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = ShoppingCart;
 }
+
+// Correção para o botão voltar no Mobile (bfcache)
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+        console.log("Página restaurada do cache. Sincronizando carrinho...");
+        if (window.cart) {
+            window.cart.items = window.cart.loadFromStorage();
+            window.cart.updateCounter();
+            window.cart.renderCartItems();
+        }
+    }
+});
