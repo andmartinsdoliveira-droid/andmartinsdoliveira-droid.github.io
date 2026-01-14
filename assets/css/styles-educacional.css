@@ -1338,31 +1338,82 @@ a:hover {
   }
 }
 
-/* ===============================
-   CORREÇÃO DE OVERFLOW – MOBILE
-   =============================== */
-
+/* =====================================================
+   CORREÇÃO MOBILE – DETALHE DO PRODUTO
+   Evita deslocamento horizontal, corte de imagem
+   e desalinhamento de botões (MOBILE ONLY)
+===================================================== */
 @media (max-width: 768px) {
-  html, body {
-    overflow-x: hidden;
-    width: 100%;
-  }
-}
 
-@media (max-width: 768px) {
-  .carousel-container {
-    max-width: 100%;
-    overflow: hidden;
-  }
-
-  .carousel-track {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
+  /* CONTÊINER GERAL DO DETALHE */
   #produtoDetalhes {
     width: 100%;
+    max-width: 100%;
+    padding: 0 12px;
+    overflow-x: clip;
+  }
+
+  /* ESTRUTURA PRINCIPAL (IMAGEM + TEXTO) */
+  #produtoDetalhes > section {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* BLOCO DAS IMAGENS */
+  #produtoDetalhes .produto-imagens,
+  #produtoDetalhes .imagem-principal {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* IMAGEM PRINCIPAL */
+  #produtoDetalhes img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain;
+    margin: 0 auto;
+  }
+
+  /* MINIATURAS */
+  #produtoDetalhes .miniaturas {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  #produtoDetalhes .miniaturas img {
+    width: 22%;
+    max-width: 60px;
+    height: auto;
+  }
+
+  /* TEXTO E DESCRIÇÃO */
+  #produtoDetalhes h1,
+  #produtoDetalhes h2,
+  #produtoDetalhes p,
+  #produtoDetalhes .descricao {
+    width: 100%;
+    max-width: 100%;
+    text-align: left;
+    word-break: break-word;
+  }
+
+  /* BOTÕES */
+  #produtoDetalhes button,
+  #produtoDetalhes .botao,
+  #produtoDetalhes .btn {
+    width: 100%;
+    max-width: 320px;
+    margin: 12px auto;
+    display: block;
   }
 }
-
