@@ -169,4 +169,8 @@
     findIndexById
   };
 
+  // Garante que os contadores visuais atualizem ao voltar página
+window.addEventListener('pageshow', typeof updateVisualCounters === 'function' ? updateVisualCounters : () => {});
+
 })();
+
