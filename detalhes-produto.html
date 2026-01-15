@@ -500,25 +500,28 @@
             return;
         }
 
-        container.innerHTML = relacionados.map(produto => `
-            <div class="produto-card">
-                <div class="produto-imagem">
-                    ${produto.URL_Imagem ? 
-                        `<img src="${produto.URL_Imagem}" alt="${produto.Nome}" onerror="this.parentElement.innerHTML='📚'">` : 
-                        '📚'
-                    }
-                </div>
-                <div class="produto-info">
-                    <h3 class="produto-titulo">${escapeHtml(produto.Nome)}</h3>
-                    <p class="produto-descricao">${escapeHtml(produto.Descrição || 'Recurso pedagógico de qualidade')}</p>
-                    <div class="produto-preco">${formatarPreco(produto.Preço)}</div>
-                    <div class="produto-acoes">
-                        <a href="detalhes-produto.html?id=${produto.ID}" class="btn btn-secondary">Ver Detalhes</a>
-                        <button onclick="adicionarAoCarrinho(${produto.ID})" class="btn btn-primary">Adicionar ao Carrinho</button>
-                    </div>
-                </div>
+container.innerHTML = relacionados.map(produto => `
+    <div class="produto-card">
+        <a href="detalhes-produto.html?id=${produto.ID}" class="produto-link">
+            <div class="produto-imagem">
+                ${produto.URL_Imagem ? 
+                    `<img src="${produto.URL_Imagem}" alt="${produto.Nome}" onerror="this.src='assets/images/placeholder.jpg'">` : 
+                    '📚'
+                }
             </div>
-        `).join('');
+        </a>
+        <div class="produto-info">
+            <h3 class="produto-titulo">${escapeHtml(produto.Nome)}</h3>
+            <p class="produto-descricao">${escapeHtml(produto.Descrição || 'Recurso pedagógico de qualidade')}</p>
+            <div class="produto-preco">${formatarPreco(produto.Preço)}</div>
+            <div class="produto-acoes">
+                <a href="detalhes-produto.html?id=${produto.ID}" class="btn btn-secondary">Ver Detalhes</a>
+                <button onclick="adicionarAoCarrinho(${produto.ID})" class="btn btn-primary">Adicionar ao Carrinho</button>
+            </div>
+        </div>
+    </div>
+`).join('');
+
     }
 
     function configurarEventListeners() {
