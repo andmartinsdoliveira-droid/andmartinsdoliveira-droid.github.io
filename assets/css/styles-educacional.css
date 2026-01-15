@@ -852,6 +852,25 @@ a:hover {
     padding: var(--espacamento-md);
   }
 
+  /* Centraliza especificamente a coluna de Links Úteis */
+.footer-section:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza horizontalmente os itens */
+    text-align: center;  /* Centraliza o texto do título e dos links */
+}
+
+/* Garante que a lista de links não tenha recuos indesejados */
+.footer-section:nth-child(2) ul {
+    padding: 0;
+    list-style: none;
+    width: fit-content; /* Faz a lista ter apenas a largura do texto */
+}
+
+.footer-section:nth-child(2) ul li {
+    text-align: center;
+}
+
   .nav {
     gap: var(--espacamento-lg);
     flex-wrap: wrap;
