@@ -289,20 +289,33 @@
             });
 
             // Ordena produtos
-            produtosFiltrados.sort((a, b) => {
-                switch (ordenacao) {
-                    case 'nome':
-                        return a.Nome.localeCompare(b.Nome);
-                    case 'preco-asc':
-                        return (parseFloat(a.Preço) || 0) - (parseFloat(b.Preço) || 0);
-                    case 'preco-desc':
-                        return (parseFloat(b.Preço) || 0) - (parseFloat(a.Preço) || 0);
-                    case 'mais-recente':
-                        return (b.ID || 0) - (a.ID || 0);
-                    default:
-                        return 0;
-                }
-            });
+produtosFiltrados.sort((a, b) => {
+    switch (ordenacao) {
+        case 'nome':
+            return a.Nome.localeCompare(b.Nome);
+        case 'preco-asc':
+            return (parseFloat(a.Preço) || 0) - (parseFloat(b.Preço) || 0);
+        case 'preco-desc':
+            return (parseFloat(b.Preço) || 0) - (parseFloat(a.Preço) || 0);
+        
+        // *** SUBSTITUA A SUA LINHA ATUAL PELA VERSÃO CORRIGIDA ABAIXO ***
+        case 'mais-recente':
+            // Converte as datas em números antes de subtrair
+            const aData = a.DataDestaque ? new Date(a.DataDestaque).getTime() : 0;
+            const bData = b.DataDestaque ? new Date(b.DataDestaque).getTime() : 0;
+            
+            // Se as datas forem iguais (ou ambas 0), usa o ID como desempate
+            if (aData === bData) {
+                return (b.ID || 0) - (a.ID || 0);
+            }
+            
+            return bData - aData;
+
+        default:
+            return 0;
+    }
+});
+
 
             paginaAtual = 1;
             exibirProdutos();
