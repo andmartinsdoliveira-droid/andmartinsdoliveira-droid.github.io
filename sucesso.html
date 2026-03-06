@@ -90,8 +90,22 @@
             </div>
         </div>
     </footer>
+
+	<script>
+fetch("SEU_WEBHOOK_MAKE")
+.then(r => r.json())
+.then(data => {
+
+ if(data.status === "approved"){
+   window.location.href = data.redirect;
+ }
+
+});
+</script>
+	
 </body>
 </html>
+
 
 
 
