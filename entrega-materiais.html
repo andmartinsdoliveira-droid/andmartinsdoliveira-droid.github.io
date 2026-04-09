@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seus materiais estão prontos - Lojinha Pedagoruja</title>
+    <meta name="description" content="Acesse e baixe seus recursos pedagógicos adquiridos na Lojinha Pedagoruja.">
+    <link rel="stylesheet" href="assets/css/styles-educacional.css">
+    <link rel="icon" type="image/png" href="assets/images/logo-emoji.png">
+    <link rel="apple-touch-icon" href="assets/images/logo-emoji.png">
+    <style>
+        /* Estilos específicos para a página de entrega mantendo a harmonia */
+        .delivery-container {
+            padding: var(--espacamento-xxl) 0;
+            min-height: 60vh;
+        }
+        
+        .delivery-card {
+            background: var(--cor-branco);
+            border-radius: var(--borda-radius-lg);
+            box-shadow: var(--sombra-lg);
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .delivery-header {
+            background: linear-gradient(135deg, var(--cor-azul-sereno) 0%, var(--cor-rosa-carinho) 100%);
+            padding: var(--espacamento-xl);
+            color: var(--cor-branco);
+            text-align: center;
+        }
+        
+        .delivery-header h1 {
+            font-family: var(--fonte-titulo);
+            font-size: 2.2rem;
+            margin-bottom: var(--espacamento-sm);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .delivery-body {
+            padding: var(--espacamento-xxl);
+        }
+        
+        .welcome-msg {
+            font-size: 1.2rem;
+            color: var(--cor-preto);
+            margin-bottom: var(--espacamento-lg);
+            text-align: center;
+        }
+        
+        .instruction-box {
+            background-color: var(--cor-cinza-claro);
+            border-left: 5px solid var(--cor-azul-sereno);
+            padding: var(--espacamento-lg);
+            margin-bottom: var(--espacamento-xl);
+            border-radius: 0 var(--borda-radius-md) var(--borda-radius-md) 0;
+        }
+        
+        .instruction-box h2 {
+            font-size: 1.1rem;
+            color: var(--cor-azul-sereno);
+            margin-bottom: var(--espacamento-sm);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .download-section {
+            text-align: center;
+            margin: var(--espacamento-xl) 0;
+        }
+        
+        .btn-download {
+            background: var(--cor-verde-esperanca);
+            color: var(--cor-branco);
+            padding: 1.2rem 2.5rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            transition: all var(--transicao-normal);
+            box-shadow: 0 4px 15px rgba(126, 211, 33, 0.3);
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .btn-download:hover {
+            background: var(--cor-sucesso);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(126, 211, 33, 0.4);
+            color: var(--cor-branco);
+        }
+        
+        .security-footer {
+            margin-top: var(--espacamento-xl);
+            padding-top: var(--espacamento-lg);
+            border-top: 1px solid var(--cor-cinza-medio);
+            text-align: center;
+            color: var(--cor-cinza-escuro);
+            font-size: 0.9rem;
+        }
+        
+        .steps-list {
+            text-align: left;
+            margin-top: var(--espacamento-md);
+            padding-left: var(--espacamento-xl);
+        }
+        
+        .steps-list li {
+            margin-bottom: var(--espacamento-sm);
+        }
+
+        @media (max-width: 768px) {
+            .delivery-header h1 { font-size: 1.8rem; }
+            .delivery-body { padding: var(--espacamento-lg); }
+            .btn-download { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Banner Pedagoruja Animado -->
+    <div class="banner banner-animado" onclick="window.location.href='index.html'" role="button" aria-label="Ir para a página inicial">
+        <img src="assets/images/banner-pedagoruja.png" alt="" class="banner-bg" aria-hidden="true">
+        <div class="banner-particles" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="banner-left" aria-hidden="true"></div>
+        <div class="banner-center"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">Lojinha Pedagoruja</a>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">Início</a>
+                    <a href="instrucoes.html" class="nav-link">Como Usar</a>
+                    <a href="sobre.html" class="nav-link">Sobre</a>
+                    <a href="contato.html" class="nav-link">Contato</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container delivery-container">
+        <div class="delivery-card">
+            <div class="delivery-header">
+                <h1>Seus materiais estão prontos</h1>
+                <p>Obrigado por confiar no nosso trabalho!</p>
+            </div>
+            
+            <div class="delivery-body">
+                <p class="welcome-msg">
+                    Olá, <strong id="clienteNome">Educadora</strong>! É um prazer ter você aqui. Seu material pedagógico foi preparado com muito carinho para transformar suas aulas.
+                </p>
+
+                <div class="instruction-box">
+                    <h2><span>📂</span> Como baixar seu material:</h2>
+                    <ul class="steps-list">
+                        <li>Clique no botão verde <strong>"Acessar meus materiais"</strong> abaixo.</li>
+                        <li>O arquivo será aberto em uma nova aba ou o download iniciará automaticamente.</li>
+                        <li>Certifique-se de salvar o arquivo em uma pasta de fácil acesso no seu computador ou celular.</li>
+                        <li>Os materiais estão em formato PDF, prontos para impressão em tamanho A4.</li>
+                    </ul>
+                </div>
+
+                <div class="download-section">
+                    <a href="#" id="btnDownload" class="btn-download" target="_blank">
+                        <span>📥</span> Acessar meus materiais
+                    </a>
+                </div>
+
+                <div class="security-footer">
+                    <p>🛡️ <strong>Ambiente Seguro:</strong> Este link é exclusivo para seu uso pessoal.</p>
+                    <p style="margin-top: 10px;">
+                        Se tiver qualquer dúvida ou dificuldade com o download, nossa equipe está pronta para ajudar: 
+                        <br><strong>contato@materiaisdaprofe.com.br</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Lojinha Pedagoruja</h3>
+                    <p>Recursos pedagógicos de qualidade para transformar a educação e inspirar o aprendizado.</p>
+                    <img src="assets/images/logo-footer.png" alt="Prof. Simone Mesini" class="footer-logo">
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Links Úteis</h3>
+                    <p><a href="index.html">Catálogo</a></p>
+                    <p><a href="instrucoes.html">Como Usar</a></p>
+                    <p><a href="sobre.html">Sobre Nós</a></p>
+                    <p><a href="contato.html">Contato</a></p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Suporte</h3>
+                    <p>📧 contato@materiaisdaprofe.com.br</p>
+                    <p>📱 (11) 99758-9094</p>
+                    <p>🕒 Seg-Sex: 8h às 18h</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Pedagoruja. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lógica de Captura de Dados Dinâmicos -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Função para pegar parâmetros da URL
+            function getUrlParam(name) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(name);
+            }
+
+            // Captura o nome e o link da URL
+            const nome = getUrlParam('n'); // n = nome
+            const link = getUrlParam('l'); // l = link do PDF
+
+            // Se houver nome, atualiza na página
+            if (nome) {
+                document.getElementById('clienteNome').textContent = decodeURIComponent(nome);
+            }
+
+            // Se houver link, atualiza o botão
+            if (link) {
+                document.getElementById('btnDownload').href = decodeURIComponent(link);
+            } else {
+                // Se não houver link, avisa o usuário (opcional)
+                document.getElementById('btnDownload').addEventListener('click', function(e) {
+                    if (this.getAttribute('href') === '#') {
+                        e.preventDefault();
+                        alert('O link do material não foi encontrado. Por favor, verifique seu e-mail ou entre em contato com o suporte.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
