@@ -389,6 +389,11 @@
         dotsContainer.innerHTML = '';
         miniaturasContainer.innerHTML = '';
 
+        // 1. Verifica se existe um vídeo na planilha (coluna "Video" ou "URL_Video")
+        const videoUrl = getField(produtoAtual, ['video', 'Video', 'URL_Video', 'url_video']);
+        const hasVideo = videoUrl && videoUrl.trim() !== '';
+
+        // 2. Coleta as imagens
         const imagens = [];
         if (produtoAtual.Imagens && Array.isArray(produtoAtual.Imagens)) {
             imagens.push(...produtoAtual.Imagens);
@@ -404,13 +409,46 @@
         const imagensUnicas = [...new Set(imagens.filter(img => img && img.toString().trim() !== ''))];
         imagensAtuais = imagensUnicas; // Salva para o Lightbox
         
-        if (imagensUnicas.length === 0) {
+        if (!hasVideo && imagensUnicas.length === 0) {
             track.innerHTML = '<div class="carousel-slide">📚</div>';
             return;
         }
 
-        imagensUnicas.forEach((url, idx) => {
-            // Slide
+        let slideIndex = 0;
+
+        // 3. Renderiza o Vídeo como o PRIMEIRO slide (se existir)
+        if (hasVideo) {
+            const slide = document.createElement('div');
+            slide.className = 'carousel-slide';
+            // O vídeo ocupa o espaço com fundo preto e controlos nativos (inclui fullscreen)
+            slide.innerHTML = `
+                <video controls style="width: 100%; height: 100%; max-height: 400px; object-fit: contain; background-color: #000; border-radius: 8px;">
+                    <source src="${videoUrl.trim()}" type="video/mp4">
+                    O seu navegador não suporta a reprodução de vídeos.
+                </video>
+            `;
+            track.appendChild(slide);
+
+            // Ponto de navegação (Dot)
+            const dot = document.createElement('button');
+            dot.className = 'carousel-dot';
+            let currentIndex = slideIndex;
+            dot.addEventListener('click', () => goToSlide(currentIndex));
+            dotsContainer.appendChild(dot);
+
+            // Miniatura (Ícone de Play)
+            const mini = document.createElement('div');
+            mini.className = 'miniatura-img';
+            mini.style.cssText = `width:60px;height:60px;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;border:2px solid transparent;font-size:24px;`;
+            mini.innerHTML = '▶️';
+            mini.addEventListener('click', () => goToSlide(currentIndex));
+            miniaturasContainer.appendChild(mini);
+
+            slideIndex++;
+        }
+
+        // 4. Renderiza as Imagens
+        imagensUnicas.forEach((url) => {
             const slide = document.createElement('div');
             slide.className = 'carousel-slide';
             slide.innerHTML = `<img src="${url}" alt="${produtoAtual.Nome}" onerror="this.src='assets/images/placeholder.jpg'">`;
@@ -434,27 +472,29 @@
 
             track.appendChild(slide);
 
-            // Dot
+            // Ponto de navegação (Dot)
             const dot = document.createElement('button');
-            dot.className = `carousel-dot ${idx === 0 ? 'active' : ''}`;
-            dot.addEventListener('click', () => goToSlide(idx));
+            dot.className = 'carousel-dot';
+            let currentIndex = slideIndex;
+            dot.addEventListener('click', () => goToSlide(currentIndex));
             dotsContainer.appendChild(dot);
 
-            // Miniatura
+            // Miniatura da imagem
             const mini = document.createElement('img');
             mini.src = url;
             mini.className = 'miniatura-img';
-            mini.style.cssText = `width:60px;height:60px;object-fit:cover;cursor:pointer;border-radius:4px;border:2px solid ${idx === 0 ? 'var(--cor-amarelo-sol)' : 'transparent'};`;
-            mini.addEventListener('click', () => goToSlide(idx));
+            mini.style.cssText = `width:60px;height:60px;object-fit:cover;cursor:pointer;border-radius:4px;border:2px solid transparent;`;
+            mini.addEventListener('click', () => goToSlide(currentIndex));
             miniaturasContainer.appendChild(mini);
+
+            slideIndex++;
         });
 
-
-
-        // Botões
+        // Botões Anterior/Próximo
         document.getElementById('prevBtn').onclick = () => goToSlide(currentSlide - 1);
         document.getElementById('nextBtn').onclick = () => goToSlide(currentSlide + 1);
 
+        currentSlide = 0;
         updateCarousel();
     }
 
@@ -468,6 +508,12 @@
         if (n >= slides.length) currentSlide = 0;
         else if (n < 0) currentSlide = slides.length - 1;
         else currentSlide = n;
+        
+        // NOVO: Pausar o vídeo automaticamente se o utilizador mudar de slide
+        document.querySelectorAll('.carousel-slide video').forEach(vid => {
+            if(!vid.paused) vid.pause();
+        });
+
         updateCarousel();
     }
 
@@ -475,16 +521,17 @@
         const track = document.getElementById('carouselTrack');
         track.style.transform = `translateX(-${currentSlide * 100}%)`;
         
-        // Update dots
+        // Atualiza os pontos (dots)
         document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
             dot.classList.toggle('active', i === currentSlide);
         });
 
-        // Update miniaturas
-        document.querySelectorAll('#miniaturas img').forEach((img, i) => {
-            img.style.borderColor = i === currentSlide ? 'var(--cor-amarelo-sol)' : 'transparent';
+        // Atualiza as miniaturas (agora seleciona tanto as imagens como o ícone de vídeo)
+        document.querySelectorAll('#miniaturas .miniatura-img').forEach((el, i) => {
+            el.style.borderColor = i === currentSlide ? 'var(--cor-amarelo-sol)' : 'transparent';
         });
     }
+
 
     function carregarProdutosRelacionados() {
         const container = document.getElementById('produtosRelacionados');
